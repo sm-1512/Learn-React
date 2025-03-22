@@ -1,10 +1,13 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 function App() {
   const [length, setLength] = useState(8);
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [characterAllowed, setCharactersAllowed] = useState(false);
   const [Password, setPassword] = useState("");
+
+  //ref hook
+  const passwordRef = useRef(null);
 
   const passwordGenerator = useCallback(() => {
     let pass = "";
@@ -18,7 +21,16 @@ function App() {
     }
     setPassword(pass);
   }, [length, numberAllowed, characterAllowed, setPassword]); //Here we are providing setPassword as a dependency and not Password because then when the page reloads componet is rendered, useEffect triggered, and then inside it the Password which is the state is updated which will again cause useEffect to run as that state(Password) is a dependency. As a result there will be an infinite loop.
-  useEffect(() => {passwordGenerator()}, [length, numberAllowed, characterAllowed, passwordGenerator]) 
+
+  const copyPasswordToClipboard = useCallback(() => {
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0,20)
+    window.navigator.clipboard.writeText(Password)
+  }, [Password])
+
+  useEffect(() => {
+    passwordGenerator();
+  }, [length, numberAllowed, characterAllowed, passwordGenerator]);
   return (
     <>
       <div className="w-full max-w-md mx-auto shadow-md rounded-lg px-4 py-3 my-8 text-orange-500 bg-gray-500">
@@ -30,8 +42,11 @@ function App() {
             className="outline-none w-full py-1 px-3"
             placeholder="Password"
             readOnly
+            ref={passwordRef}
           />
-          <button className="outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0">
+          <button
+          onClick={copyPasswordToClipboard}
+          className="outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0">
             Copy
           </button>
         </div>
