@@ -37,6 +37,7 @@ function App() {
       )
     ); /// ... (spread operator) creates a new copy of an array or object. The setTodos function updates the state by mapping over the previous todos. If a todo matches the given id, we create a new object with the same properties (...prevTodo) but update the completed property by toggling its value. This ensures that we do not mutate the existing state but instead return a new updated array.
   };
+
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem("todos"));
     if (todos && todos.length > 0) {
@@ -55,19 +56,22 @@ function App() {
     <TodoProvider
       value={{ todos, addTodo, updateTodo, deleteTodo, toggleComplete }}
     >
-      <div className="bg-[#172842] min-h-screen py-8">
-        <div className="w-full max-w-2xl mx-auto shadow-md rounded-lg px-4 py-3 text-white">
-          <h1 className="text-2xl font-bold text-center mb-8 mt-2">
+      <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 min-h-screen py-8 flex justify-center items-center px-4">
+        <div className="w-full max-w-2xl bg-gray-800 shadow-lg rounded-lg px-6 py-5 text-white">
+          <h1 className="text-3xl font-extrabold text-center mb-6 mt-2 text-blue-300 drop-shadow-md">
             Manage Your Todos
           </h1>
-          <div className="mb-4">
+          <div className="mb-6">
             {/* Todo form goes here */}
             <TodoForm />
           </div>
-          <div className="flex flex-wrap gap-y-3">
+          <div className="flex flex-col gap-4">
             {/*Loop and Add TodoItem here */}
             {todos.map((todo) => (
-              <div key={todo.id} className="w-full">
+              <div
+                key={todo.id}
+                className="bg-gray-700 p-4 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300"
+              >
                 <TodoItem todo={todo} />
               </div>
             ))}

@@ -1,63 +1,73 @@
-import React, { useState } from 'react'
-import { useTodo } from '../context';
-
+import React, { useState } from "react";
+import { useTodo } from "../context";
 
 function TodoItem({ todo }) {
-
   const [isTodoEditable, setIsTodoEditable] = useState(false);
-  const [todoMsg, setTodoMsg] = useState(todo.todo)
-  const {updateTodo, deleteTodo, toggleComplete} = useTodo();
+  const [todoMsg, setTodoMsg] = useState(todo.todo);
+  const { updateTodo, deleteTodo, toggleComplete } = useTodo();
 
-  const editTodo= () => {
-    updateTodo(todo.id, {...todo, todo: todoMsg})
-    setIsTodoEditable(false)
-  }
+  const editTodo = () => {
+    updateTodo(todo.id, { ...todo, todo: todoMsg });
+    setIsTodoEditable(false);
+  };
 
   const toggleCompleted = () => {
-    toggleComplete(todo.id)
-  }
+    toggleComplete(todo.id);
+  };
+
   return (
     <div
-      className={`flex border border-black/10 rounded-lg px-3 py-1.5 gap-x-3 shadow-sm shadow-white/50 duration-300  text-black ${
-        todo.completed ? "bg-[#c6e9a7]" : "bg-[#ccbed7]"
+      className={`flex items-center justify-between border border-gray-700 rounded-lg px-5 py-3 shadow-md transition-all duration-300 ${
+        todo.completed
+          ? "bg-gradient-to-r from-green-400 to-green-500 text-gray-900"
+          : "bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
       }`}
     >
+      {/* Checkbox for Completion */}
       <input
         type="checkbox"
-        className="cursor-pointer"
+        className="cursor-pointer w-6 h-6 accent-green-500"
         checked={todo.completed}
         onChange={toggleCompleted}
       />
+
+      {/* Todo Text Input */}
       <input
         type="text"
-        className={`border outline-none w-full bg-transparent rounded-lg ${
-          isTodoEditable ? "border-black/10 px-2" : "border-transparent"
-        } ${todo.completed ? "line-through" : ""}`}
+        className={`w-full mx-3 text-lg font-medium bg-transparent rounded-md focus:outline-none ${
+          isTodoEditable
+            ? "border border-gray-400 px-3 py-1 bg-white text-gray-900"
+            : "border-transparent"
+        } ${todo.completed ? "line-through text-gray-600" : ""}`}
         value={todoMsg}
         onChange={(e) => setTodoMsg(e.target.value)}
         readOnly={!isTodoEditable}
       />
-      {/* Edit, Save Button */}
-      <button
-        className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50"
-        onClick={() => {
-          if (todo.completed) return;
 
-          if (isTodoEditable) {
-            editTodo();
-          } else setIsTodoEditable((prev) => !prev);
-        }}
-        disabled={todo.completed}
-      >
-        {isTodoEditable ? "📁" : "✏️"}
-      </button>
-      {/* Delete Todo Button */}
-      <button
-        className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0"
-        onClick={() => deleteTodo(todo.id)}
-      >
-        ❌
-      </button>
+      {/* Action Buttons Container */}
+      <div className="flex space-x-4">
+        {/* Edit / Save Button */}
+        <button
+          className="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white transition duration-200 shadow-md disabled:opacity-50"
+          onClick={() => {
+            if (todo.completed) return;
+            if (isTodoEditable) {
+              editTodo();
+            } else setIsTodoEditable((prev) => !prev);
+          }}
+          disabled={todo.completed}
+        >
+          {isTodoEditable ? "💾" : "✏️"}
+        </button>
+
+        {/* Delete Button */}
+        <button
+          className="w-10 h-10 rounded-lg flex items-center justify-center bg-white hover:bg-red-600 text-white transition duration-200 shadow-md"
+          onClick={() => deleteTodo(todo.id)}
+        >
+          ❌
+        </button>
+      </div>
     </div>
   );
 }
